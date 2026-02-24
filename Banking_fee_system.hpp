@@ -57,44 +57,43 @@ private:
 	double _money_return;
 };
 
-//5.简单工厂
-class Factory
+//5.简单工厂和策略模式的组合
+class Context
 {
 public:
-	Factory(int choice = 0, double total=0.0)
-		:_choice(choice)
-		,_total(total)
-	{ }
-	CashSuper* creatcashaccept()
+	//工厂
+	Context(double total = 0, int chioce = -1)
+		:_total(total)
+		,_choice(chioce)
 	{
-		if (_choice == 0)
-		{
-			std::cout << "no choice , will exit..." << std::endl;
-			exit(EXIT_FAILURE);
-		}
-		CashSuper* cs = nullptr;
 		switch (_choice)
 		{
 		case 1:
-			std::cout << "normal price:" << std::endl;
-			cs = new CashNormal(_total);
+			std::cout << "normal" << std::endl;
+			_cs = new CashNormal(_total);
 			break;
 		case 2:
-			std::cout << "rebate price:" << std::endl;
-			cs = new CashRebate(_total, 0.1);
+			std::cout << "rebate" << std::endl;
+			_cs = new CashRebate(_total, 0.1);
 			break;
 		case 3:
-			std::cout << "return price:" << std::endl;
-			cs = new CashReturn(_total, 300, 200);
+			std::cout << "return" << std::endl;
+			_cs = new CashReturn(_total, 300, 200);
 			break;
 		default:
-			std::cout << "invalid choice " << std::endl;
-			break;
+			std::cout << "Invalid Choice!" << std::endl;
+			_cs = nullptr;
+			exit(EXIT_FAILURE);
 		}
-		return cs;
 	}
 
+	//策略
+	double GetResult()
+	{
+		return _cs->acceptcash();
+	}
 private:
-	int _choice;
 	double _total;
+	int _choice;
+	CashSuper* _cs;
 };
